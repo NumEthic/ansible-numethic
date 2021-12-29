@@ -1,0 +1,7 @@
+all:
+  hosts:
+    my_server:
+      ansible_host: server.domain
+      ansible_user: myuser
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

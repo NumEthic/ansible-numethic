@@ -1,0 +1,21 @@
+
+---
+- hosts: my_server
+  become: yes
+  roles:
+    - numethic
+  vars:
+    domain: mon.domain
+    moodle_use: true
+    moodle_domain: moodle.mon.domain
+    moodle_db_pwd: mot_de_passe_db
+    moodle_fullname: Plateforme numérique Moodle de mon école
+    moodle_shortname: Moodle de l'école
+    moodle_admin_username: admin
+    moodle_admin_pwd: mot_de_passe_moodle
+    moodle_admin_email: moi@mon.domain
+    nextcloud_use: true
+    nextcloud_domain: cloud.mon.domain
+    nextcloud_db_pwd: mot_de_passe_nc
+    nextcloud_admin_username: admin
+    nextcloud_admin_pwd: mot_de_passe
