@@ -15,13 +15,6 @@
   when: moodle_use
   register: letsencrypt_output
 
-- name: Add letsencrypt cronjob for moodle cert renewal
-  cron:
-    name: letsencrypt_renewal
-    special_time: weekly
-    job: letsencrypt --renew certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ moodle_domain }} && systemctl restart nginx
-  when: moodle_use
-
 - name: Remove temporary certificate for nextcloud
   ansible.builtin.shell: "rm -R /etc/letsencrypt/live/{{ nextcloud_domain }}/"
   args:
@@ -35,9 +28,9 @@
   when: nextcloud_use
   register: letsencrypt_output
 
-- name: Add letsencrypt cronjob for nextcloud cert renewal
+- name: Add letsencrypt cronjob for cert renewal
   cron:
     name: letsencrypt_renewal
     special_time: weekly
-    job: letsencrypt --renew certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ nextcloud_domain }} && systemctl restart nginx
-  when: nextcloud_use
+    job: letsencrypt renew && systemctl restart nginx
+  when: nextcloud_use or moodle_use
