@@ -1,0 +1,13 @@
+- name: Install nextcloud
+  ansible.builtin.shell: "sudo -u nginx php occ  maintenance:install --database \
+  'mysql' --database-name '{{ nextcloud_db_name }}'  --database-user '{{ nextcloud_db_user }}' --database-pass \
+  '{{ nextcloud_db_pwd }}' --admin-user '{{ nextcloud_admin_username }}' --admin-pass '{{ nextcloud_admin_pwd }}'
+  "
+  args:
+    chdir: /var/www/html/nextcloud/
+    creates: /var/www/html/nextcloud/config/config.php
+
+- name: Set trusted domain
+  ansible.builtin.shell: "sudo -u nginx php occ config:system:set trusted_domains 1 --value={{ nextcloud_domain }}"
+  args:
+    chdir: /var/www/html/nextcloud

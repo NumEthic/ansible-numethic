@@ -1,0 +1,24 @@
+---
+fail2ban_maxretry: 6
+fail2ban_services:
+  - name: sshd
+    bantime: 86400 # 24h
+nginx_logrotate_conf_enable: true
+nginx_logrotate_conf:
+  paths:
+    - "/var/log/nginx/*.log"
+  options:
+    - daily
+    - missingok
+    - rotate 14
+    - compress
+    - delaycompress
+    - notifempty
+    - create 0644 www-data adm  # Changes nginx logs permissions
+mysql_packages:
+  - mariadb-client
+  - mariadb-server
+  - python3-mysqldb
+mysql_databases: []
+mysql_users: []
+nginx_servers: {}

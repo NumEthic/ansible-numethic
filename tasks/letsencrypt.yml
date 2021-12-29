@@ -1,0 +1,32 @@
+---
+- name: "Create required directories in /etc/letsencrypt"
+  file:
+    path: "/etc/letsencrypt/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=x,o=x
+  with_items:
+  - account
+  - certs
+  - csrs
+  - keys
+  - live
+
+- name: "Create .well-known/acme-challenge directory"
+  file:
+    path: /var/www/html/letsencrypt/.well-known/acme-challenge
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- name: Install certbot
+  apt:
+    pkg: certbot
+
+- name: Create a self-signed certificate for first run of nginx
+  shell: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/selfsigned.key -out /etc/ssl/certs/selfsigned.crt -subj '/C=BE/ST=Namur/L=Namur/O=NumEthic/OU=IT Department/CN={{ domain }}'"
+  args:
+    creates: /etc/ssl/private/selfsigned.key
+  register: selfsigned_created

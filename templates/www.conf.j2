@@ -1,0 +1,13 @@
+[www]
+user = nginx
+group = nginx
+
+listen = /run/php/php-fpm.sock
+listen.owner = nginx
+listen.group = nginx
+
+pm = dynamic
+pm.max_children = {{ php_memory_use * 10 }}
+pm.start_servers = {{ php_memory_use * 2.5 | round | int }}
+pm.min_spare_servers = {{ php_memory_use * 2.5 | round | int }}
+pm.max_spare_servers = {{ php_memory_use * 7.5 | round | int }}

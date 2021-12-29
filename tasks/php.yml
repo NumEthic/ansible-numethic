@@ -1,0 +1,32 @@
+---
+- name: Install a list of needed packages
+  apt:
+    pkg:
+    - php
+    - php-fpm
+- name: Get php version
+  ansible.builtin.shell: php -v | head -1 | awk '{print $2}'
+  register: php_version_output
+- name: Extract first two version numbers
+  set_fact:
+    php_version: "{{ php_version_output.stdout | regex_search('([0-9]+)\\.([0-9]+)') }}"
+
+- name: Set php-fpm configuration
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/www.conf.j2"
+    dest: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure max_input_vars is high enough
+  ansible.builtin.lineinfile:
+    path: "/etc/php/{{ php_version }}/fpm/php.ini"
+    regexp: '^max_input_vars  '
+    insertafter: '^;max_input_vars '
+    line: max_input_vars = 5000
+
+- name: Restart service php-fpm
+  ansible.builtin.service:
+    name: "php{{ php_version }}-fpm"
+    state: restarted

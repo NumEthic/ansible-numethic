@@ -1,0 +1,43 @@
+- name: output selfsigned_created
+  ansible.builtin.debug:
+    msg: "{{ selfsigned_created }}"
+
+- name: Remove temporary certificate for moodle
+  ansible.builtin.shell: "rm -R /etc/letsencrypt/live/{{ moodle_domain }}/"
+  args:
+    creates: "/etc/letsencrypt/live/{{ moodle_domain }}/selfsigned"
+  when: moodle_use
+
+- name: Create letsencrypt certificate for moodle
+  ansible.builtin.shell: letsencrypt certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ moodle_domain }}
+  args:
+    creates: "/etc/letsencrypt/live/{{ moodle_domain }}/"
+  when: moodle_use
+  register: letsencrypt_output
+
+- name: Add letsencrypt cronjob for moodle cert renewal
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: letsencrypt --renew certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ moodle_domain }} && systemctl restart nginx
+  when: moodle_use
+
+- name: Remove temporary certificate for nextcloud
+  ansible.builtin.shell: "rm -R /etc/letsencrypt/live/{{ nextcloud_domain }}/"
+  args:
+    creates: "/etc/letsencrypt/live/{{ nextcloud_domain }}/selfsigned"
+  when: nextcloud_use
+
+- name: Create letsencrypt certificate for nextcloud
+  ansible.builtin.shell: letsencrypt certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ nextcloud_domain }}
+  args:
+    creates: /etc/letsencrypt/live/{{ nextcloud_domain }}
+  when: nextcloud_use
+  register: letsencrypt_output
+
+- name: Add letsencrypt cronjob for nextcloud cert renewal
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: letsencrypt --renew certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ nextcloud_domain }} && systemctl restart nginx
+  when: nextcloud_use

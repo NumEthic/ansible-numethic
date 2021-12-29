@@ -1,0 +1,5 @@
+- Faire un README
+- Ajouter dhparams pour ssl
+- Activer http2
+- Ajouter des plugins/themes ?
+- Configurer nginx pour les fichiers statics

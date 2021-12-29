@@ -1,0 +1,27 @@
+---
+domain: mondomain
+# Memory that could be use by php (in Go)
+php_memory_use: 2
+
+# Moodle
+moodle_use: true
+moodle_domain: "moodle.{{ domain }}"
+moodle_db_name: moodle
+moodle_db_user: moodle
+moodle_db_pwd: moodlepassword
+moodle_fullname: Plateforme numérique Moodle
+moodle_shortname: Moodle NumEthic
+moodle_admin_username: adminmoodle
+moodle_admin_pwd: motdepasseadmin
+moodle_admin_email: "admin@{{ domain }}"
+
+# Nextcloud
+nextcloud_use: true
+nextcloud_domain: "cloud.{{ domain }}"
+nextcloud_db_name: nextcloud
+nextcloud_db_user: nextcloud
+nextcloud_db_pwd: nextcloudpassword
+nextcloud_admin_username: adminnextcloud
+nextcloud_admin_pwd: motdepasseadmin
+
+letsencrypt_email: "postmaster@{{ domain }}"
