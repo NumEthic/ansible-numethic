@@ -5,8 +5,9 @@
 - name: Remove temporary certificate for moodle
   ansible.builtin.shell: "rm -R /etc/letsencrypt/live/{{ moodle_domain }}/"
   args:
-    creates: "/etc/letsencrypt/live/{{ moodle_domain }}/selfsigned"
+    removes: "/etc/letsencrypt/live/{{ moodle_domain }}/selfsigned"
   when: moodle_use
+  register: remove_selfsigned
 
 - name: Create letsencrypt certificate for moodle
   ansible.builtin.shell: letsencrypt certonly -n --webroot -w /var/www/html/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ moodle_domain }}
@@ -18,7 +19,7 @@
 - name: Remove temporary certificate for nextcloud
   ansible.builtin.shell: "rm -R /etc/letsencrypt/live/{{ nextcloud_domain }}/"
   args:
-    creates: "/etc/letsencrypt/live/{{ nextcloud_domain }}/selfsigned"
+    removes: "/etc/letsencrypt/live/{{ nextcloud_domain }}/selfsigned"
   when: nextcloud_use
 
 - name: Create letsencrypt certificate for nextcloud
